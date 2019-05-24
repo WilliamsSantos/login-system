@@ -1,0 +1,11 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const schema = new Schema({
+	createdAt: Date,
+	User_id: String
+});
+
+const AccessToken = mongoose.model('AccessToken', schema);
+
+module.exports = AccessToken;
