@@ -5,13 +5,13 @@ const routes = [
     method: 'POST',
     url: '/user/login',
     handler: userController.checkLoginType
-  }
- /* {
-    method: 'GET',
-    url: '/api/cars/:id',
-    handler: carController.getSingleCar
   },
-  {
+ {
+    method: 'POST',
+    url: '/user/checkLoginExistences',
+    handler: userController.checkLoginExistences
+  },
+ /*  {
     method: 'POST',
     url: '/api/cars',
     handler: carController.addCar,

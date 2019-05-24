@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-	createdAt: Date,
+	createdAt: { type: Date, default: Date.now },
 	email: String,
 	User_id: String
 });

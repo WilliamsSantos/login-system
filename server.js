@@ -10,25 +10,22 @@ const recoverPasswordRoutes = require('./routes/recover_password_routes');
 const forgotPasswordRoutes = require('./routes/forgot_password_routes');
 
 
-
 // Call routes
 userRoutes.forEach((route, index) => {
     fastify.route(route);
-})
+});
 
 acessTokenRoutes.forEach((route, index) => {
     fastify.route(route);
-})
+});
 
 recoverPasswordRoutes.forEach((route, index) => {
     fastify.route(route);
-})
+});
 
 forgotPasswordRoutes.forEach((route, index) => {
     fastify.route(route);
-})
-
-
+});
 
 
 
@@ -36,15 +33,15 @@ forgotPasswordRoutes.forEach((route, index) => {
 mongoose.set("useCreateIndex", true);
 mongoose.connection.on('error',(err)=>{
     console.log("Db Erro\n");
-})
+});
 
 mongoose.connection.on('disconnected',() => {
     console.log("Db Disconnectes\n");
-})
+});
 
 mongoose.connection.on('connected', () => {
     console.log("Db connected\n");
-})
+});
 
 
 // Run the server!
@@ -57,4 +54,8 @@ const start = async () => {
     process.exit(1)
   }
 }
-start()
+start();
+
+
+
+
