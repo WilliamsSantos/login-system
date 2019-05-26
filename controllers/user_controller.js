@@ -3,143 +3,253 @@ const boom = require('boom');
 
 // Get Data Models
 const User = require('../models/User');
+const AcessToken = require('../models/AccessToken');
 
-// Get all cars
-exports.checkLoginType = async (req, reply) => {
-  const { name, email, cpf_cnpj, password } = req.body; 
-
-  //  testes: '{"name":"Ryzzan", "email":"Williams@outlook.com","cpf_cnpj":34565434232, "password":4334345}'
+//Router exports
+exports.login = async (req, reply) => {
   
-  const email_valid = emailValidates(email);
-  
-  //const validate_cpf_cnpj = cpf_cnpj.trim().replace(/[^\d]+/g,'');
- 
-  if(email_valid === true){
-    try { 
-      if (name && email && cpf_cnpj && password){
-          reply
-          .header('Content-Type', 'application/json; charset=utf-8')  
-          .send({ 
-                "statusCode": 200, //# Resposta de protocolo
-                "result" : 'Form OK', //#retorna o valor esperado
-                "green" : 1,        //# 1 = sucess 0 = error  
-                "redCode" : 0,      //# Id da mensagem de erro
-                "message" : "All Ok.",// #mensagem vinculada ao login
-                "stackResult" : {
-                  "message": "OK" //#Retorna o objeto de retorno(informações do erro), lista de tratamento;
-                },
-          }).redirect(200, '/user/checkLoginExistences');
-      }else{
-        if(!password){
-          reply
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send({ 
-                  "statusCode" : 404,
-                  "result" : 'Password is empty',
-                  "green" : 0,       
-                  "redCode" : 1,     
-                  "message" : "You need fill the password field.",
-                  "stackResult" : {
-                    "message" :`error: Password empty`
-                  }
-            });
-        }else{
-          reply
-          .header('Content-Type', 'application/json; charset=utf-8')
-          .send({ 
-                "statusCode" : 404,
-                "result" : 'Some input of Form is empty',
-                "green" : 0,       
-                "redCode" : 1,     
-                "message" : "You need Fill all the form.",
-                "stackResult" : {
-                  "message" :`error: ${this.message}`
-                }
-          });
-        }
-      }
-    } catch (e) {
-      throw boom.boomify(e);
-    }
-  }else{
-    reply
-    .header('Content-Type', 'application/json; charset=utf-8')
-    .send({ 
-          "statusCode" : 404,
-          "result" : 'email is invalid',
-          "green" : 0,       
-          "redCode" : 1,     
-          "message" : "You need Fill all the form.",
-          "stackResult" : {
-            "message" :`error: Email invalid!`
-          }
-    });
-  }
-}
+  const { login, password } = req.body;
 
-exports.checkLoginExistences = async (req, reply) => {
-  const { email, password } = req.body; 
- 
-  try{ 
-    User.findOne({email, password }, (err, data) => {
-      if (err) {
-        reply
+  if(login && password){ 
+    const login_type = checkLoginType(login);   
+    console.log("Login type: "+login_type+"\n" );
+    
+    if(login_type){
+  
+      const user_existence = checkLoginExistences(login, login_type); 
+      console.log("user_existence: "+user_existence+"\n" );
+      
+      if(user_existence){
+
+        const password_existence = checkPasswordExistence(user_existence.id, password); //Aqui ele recupera o id do resultado data
+        console.log("password_existence: "+password_existence+"\n");
+        
+        if(password_existence){
+
+          const user_existense = password_existence;
+          creatToken(user_existense.id);
+          console.log("U usuario n existe "+creatToken(user_existence.id));
+          
+          reply
           .header('Content-Type', 'application/json; charset=utf-8')
           .send({
-            "statusCode" : 500, 
-            "result" : 'Error in Query!', 
-            "green" : 0,        
-            "redCode" : 5,      
-            "message" : `Query error`,
-            "stackResult" : {
-              "message" : "Error: Query database error"
-            }
+                  "statusCode": 404,
+                  "result": 'Sucess',
+                  "green": 0,
+                  "redCode": 1,
+                  "message": "",
+                  "stackResult": {
+                    "message": `Login its ok`
+                  }
           });
-      }
-      if(data === null || data === [] ){
+    
+        }else{
+          console.log("Passwordot existense "+ user_existence +"\n");
+            reply
+            .header('Content-Type', 'application/json; charset=utf-8')
+            .send({
+                "statusCode": 404,
+                "result": 'Invalid password',
+                "green": 0,
+                "redCode": 1,
+                "message": "Password invalid.",
+                "stackResult": {
+                      "message": `error: Password is invalid.`
+                }
+            });
+        }
+      }else{
+
+        console.log("User not existense"+ user_existence +"\n");
         reply
         .header('Content-Type', 'application/json; charset=utf-8')
         .send({
-          "statusCode" : 500, 
-          "result" : 'No user with the params!', 
-          "green" : 0,        
-          "redCode" : 5,      
-          "message" : `No query result`,
-          "stackResult" : {
-            "message" : "Error: No query result"
+          "statusCode": 500,
+          "result": `No register in database!`,
+          "green": 0,
+          "redCode": 5,
+          "message": `No query result`,
+          "stackResult": {
+            "message": "Error: No query result"
           }
         });
       }
+    }else{
+      reply
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send(
+        {
+          "statusCode": 404,
+          "result": 'Invalid value',
+          "green": 0,
+          "redCode": 1,
+          "message": "Insert a valid login.",
+          "stackResult": {
+                "message": `error: Invalid type.`
+          }
+        }
+      );
+    }
+  }else{
+    if(!password){
+      reply
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send({
+        "statusCode": 404,
+        "result": 'Password is empty.',
+        "green": 0,
+        "redCode": 1,
+        "message": "You need Fill the password.",
+        "stackResult": {
+          "message": `error: password is empty.`
+        }
+      });
+    }
+    reply
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send({
+        "statusCode": 404,
+        "result": 'Login field is empty',
+        "green": 0,
+        "redCode": 1,
+        "message": "You need Fill the login field.",
+        "stackResult": {
+          "message": `error: Field login is empty`
+        }
+      });
+  }
+}
+ 
+
+function checkLoginType(login) {
+  var type = null;
+   
+//
+// Check the type of login and add the value to type var
+//
+  if(isNumber(login)){
+      
+      const login_params  = login.trim().replace(/[^\d]+/g,'');
+      
+      if(login_params.length === 11){
+        type = "cpf";
+
+      }else if(login_params.length === 14){
+        type = "cnpj";
+
+      }
+
+  }else if(emailValidates(login.trim().toLowerCase())){ 
+      type = "email";
+ 
+  }else {
+
+    var regex = new RegExp("^[a-zA-Z0-9-Zàèìòùáéíóúâêîôûãõ\b]+$");
+    if(regex.test(login)){
+      type = "username";
+    }
+
+}
+    if(type != null){
+      return(type);
+    }
+  return false;
+}
+
+function checkLoginExistences(login, type) {
+  try {
+    User.findOne({ type : login }, (err, data) => {
+      if (err) throw err;
+      if (data === null || data === []) {
+        return false;
+      }
+      return(data); 
+    });
+  }
+  catch (e) {
+      boom.boomify(e);
+  }
+};
+
+function checkPasswordExistence(user_id, password) {
+  try {
+    User.findOne({ user_id, password }, (err, data) => {
+      if (err) throw err;
+      if (data === null || data === []) {
+        return false;
+      }
       reply
         .header('Content-Type', 'application/json; charset=utf-8')
-        .send(" user: "+data, 
-          { 
-            "statusCode": 200,
-            "result" : 'Form OK',
-            "green" : 1,         
-            "redCode" : 0,     
-            "message" : "All Ok.",
-            "stackResult" : {
-              "message": "OK"
+        .send({
+          "statusCode": 200,
+          "result": 'Form OK',
+          "green": 1,
+          "redCode": 0,
+          "message": "All Ok.",
+          "stackResult": {
+            "message": "OK"
           },
         });
+      return(data); 
     });
-  }catch(e){
+  }
+  catch (e) {
     boom.boomify(e);
   }
-}
+};
 
-exports.checkPasswordExistence = async (req, reply) => {
-  try{
-
-  }catch(e){
+function creatToken(user_id){
+ try {
+    const acessTokenCreate = new AcessToken(user_id);
+    try {
+      acessTokenCreate.save();
+    } catch (e) {
+      boom.boomify(e);
+      return false;
+    } 
+ } catch (e) {
     boom.boomify(e);
-  }
+ }
 }
+
+//Aux functions
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+const emailValidates =(email) => {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 /*
+
+FUNCOES PARA ESTUDO
 
 function newFunction_1(req) {
   const name = req.body.name;
@@ -204,9 +314,3 @@ exports.deleteCar = async (req, reply) => {
   }
 }
 */
-
-
-const emailValidates =(email) => {
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-}

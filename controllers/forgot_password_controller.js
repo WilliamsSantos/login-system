@@ -3,7 +3,6 @@ const boom = require('boom');
 // Get Data Models
 const forgottenPassword = require('../models/ForgottenPassword');
 
-// Get all cars
 exports.checkLoginType = async (req, reply) => {
   const { email, name, cpf_cnpj } = req.body;
 

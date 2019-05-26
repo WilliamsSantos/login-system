@@ -4,30 +4,12 @@ const mongoose  = require('./config/mongodb');
 
 
 //Routes reclare
-const userRoutes = require('./routes/user_routes');
-const acessTokenRoutes = require('./routes/access_token_routes');
-const recoverPasswordRoutes = require('./routes/recover_password_routes');
-const forgotPasswordRoutes = require('./routes/forgot_password_routes');
+const Routes = require('./routes/routes');
 
-
-// Call routes
-userRoutes.forEach((route, index) => {
+// Call route
+Routes.forEach((route, index) => {
     fastify.route(route);
 });
-
-acessTokenRoutes.forEach((route, index) => {
-    fastify.route(route);
-});
-
-recoverPasswordRoutes.forEach((route, index) => {
-    fastify.route(route);
-});
-
-forgotPasswordRoutes.forEach((route, index) => {
-    fastify.route(route);
-});
-
-
 
 //Connection database Mongodb test
 mongoose.set("useCreateIndex", true);
@@ -53,7 +35,7 @@ const start = async () => {
     fastify.log.error(err)
     process.exit(1)
   }
-}
+}; 
 start();
 
 
