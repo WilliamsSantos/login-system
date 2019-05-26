@@ -5,15 +5,37 @@ const forgottenPassword = require('../models/ForgottenPassword');
 
 // Get all cars
 exports.checkLoginType = async (req, reply) => {
+  const { email, name, cpf_cnpj } = req.body;
+
   try {
-    return ({
-        message:"Funcionando post ForgottenPassword"
-    });
-  } catch (err) {
-    return ({
-        error: boom.boomify(err)
-    })
-  
+   if(email || name || cpf_cnpj){
+    reply
+      .header('Content-Type', 'application/json; charset=utf-8')
+      .send({
+        "statusCode": 200,
+        "result" : 'Form OK',
+        "green" : 1,         
+        "redCode" : 0,     
+        "message" : "All Ok.",
+        "stackResult" : {
+          "message": "OK"
+        }
+      });
+   }
+   reply
+    .header('Content-Type', 'application/json; charset=utf-8')
+    .send({ 
+          "statusCode" : 404,
+          "result" : 'email not found ',
+          "green" : 0,       
+          "redCode" : 2,     
+          "message" : "You need Fill email.",
+          "stackResult" : {
+           "message" :`error: Email not found!`
+          }
+        });
+  } catch (e) {
+    return boom.boomify(e);
   }
 }
 

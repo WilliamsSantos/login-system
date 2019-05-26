@@ -1,3 +1,4 @@
+//Error plugin
 const boom = require('boom');
 
 // Get Data Models
@@ -6,15 +7,18 @@ const User = require('../models/User');
 // Get all cars
 exports.checkLoginType = async (req, reply) => {
   const { name, email, cpf_cnpj, password } = req.body; 
-  //  testes: '{"name":"Ryzzan", "email":"Williams@outlook.com","cpf_cnpj":34565434232, "password":4334345}'
-  const email_validate = emailValidates(email);
 
-  if(email_validate === true){
+  //  testes: '{"name":"Ryzzan", "email":"Williams@outlook.com","cpf_cnpj":34565434232, "password":4334345}'
+  
+  const email_valid = emailValidates(email);
+  
+  //const validate_cpf_cnpj = cpf_cnpj.trim().replace(/[^\d]+/g,'');
+ 
+  if(email_valid === true){
     try { 
       if (name && email && cpf_cnpj && password){
-        reply
-          .header('Content-Type', 'application/json; charset=utf-8')
-          .redirect('/user/checkLoginExistences')
+          reply
+          .header('Content-Type', 'application/json; charset=utf-8')  
           .send({ 
                 "statusCode": 200, //# Resposta de protocolo
                 "result" : 'Form OK', //#retorna o valor esperado
@@ -24,8 +28,7 @@ exports.checkLoginType = async (req, reply) => {
                 "stackResult" : {
                   "message": "OK" //#Retorna o objeto de retorno(informações do erro), lista de tratamento;
                 },
-          })
-        
+          }).redirect(200, '/user/checkLoginExistences');
       }else{
         if(!password){
           reply
@@ -37,7 +40,7 @@ exports.checkLoginType = async (req, reply) => {
                   "redCode" : 1,     
                   "message" : "You need fill the password field.",
                   "stackResult" : {
-                    "message" :`error: ${boom.boomify(err)}`
+                    "message" :`error: Password empty`
                   }
             });
         }else{
@@ -50,13 +53,13 @@ exports.checkLoginType = async (req, reply) => {
                 "redCode" : 1,     
                 "message" : "You need Fill all the form.",
                 "stackResult" : {
-                  "message" :`error: ${boom.boomify(err)}`
+                  "message" :`error: ${this.message}`
                 }
           });
         }
       }
-    } catch (err) {
-      throw boom.boomify(err)
+    } catch (e) {
+      throw boom.boomify(e);
     }
   }else{
     reply
@@ -68,7 +71,7 @@ exports.checkLoginType = async (req, reply) => {
           "redCode" : 1,     
           "message" : "You need Fill all the form.",
           "stackResult" : {
-            "message" :`error: ${boom.boomify(err)}`
+            "message" :`error: Email invalid!`
           }
     });
   }
@@ -76,40 +79,65 @@ exports.checkLoginType = async (req, reply) => {
 
 exports.checkLoginExistences = async (req, reply) => {
   const { email, password } = req.body; 
-  
+ 
   try{ 
-    User.find({ email, password }, (err, data) => {
+    User.findOne({email, password }, (err, data) => {
       if (err) {
         reply
           .header('Content-Type', 'application/json; charset=utf-8')
           .send({
-          "statusCode" : 500, 
-            "result" : 'No user with the params!', 
+            "statusCode" : 500, 
+            "result" : 'Error in Query!', 
             "green" : 0,        
             "redCode" : 5,      
-            "message" : "No data Found.",
+            "message" : `Query error`,
             "stackResult" : {
-              "message" : `Error: ${boom.boomify(err)}`
+              "message" : "Error: Query database error"
             }
           });
       }
+      if(data === null || data === [] ){
+        reply
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          "statusCode" : 500, 
+          "result" : 'No user with the params!', 
+          "green" : 0,        
+          "redCode" : 5,      
+          "message" : `No query result`,
+          "stackResult" : {
+            "message" : "Error: No query result"
+          }
+        });
+      }
       reply
         .header('Content-Type', 'application/json; charset=utf-8')
-        .send({ 
-              "statusCode": 200, //# Resposta de protocolo
-              "result" : 'Form OK', //#retorna o valor esperado
-              "green" : 1,        //# 1 = sucess 0 = error  
-              "redCode" : 0,      //# Id da mensagem de erro
-              "message" : "All Ok.",// #mensagem vinculada ao login
-              "stackResult" : {
-                "message": "OK" //#Retorna o objeto de retorno(informações do erro), lista de tratamento;
-              },
-        })
+        .send(" user: "+data, 
+          { 
+            "statusCode": 200,
+            "result" : 'Form OK',
+            "green" : 1,         
+            "redCode" : 0,     
+            "message" : "All Ok.",
+            "stackResult" : {
+              "message": "OK"
+          },
+        });
     });
-  }catch(err){
-    throw boom.boomify(err);
+  }catch(e){
+    boom.boomify(e);
   }
 }
+
+exports.checkPasswordExistence = async (req, reply) => {
+  try{
+
+  }catch(e){
+    boom.boomify(e);
+  }
+}
+
+
 
 /*
 
@@ -178,7 +206,7 @@ exports.deleteCar = async (req, reply) => {
 */
 
 
-const emailValidates =(email) =>{
+const emailValidates =(email) => {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
