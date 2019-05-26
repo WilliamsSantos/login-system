@@ -24,18 +24,6 @@ const routes = [
     url: '/user/checkToken',
     handler: checkTokenController.checkToken
   }
- /*  {
-    method: 'POST',
-    url: '/api/cars',
-    handler: carController.addCar,
-    schema: documentation.addCarSchema
-  },
-  {
-    method: 'DELETE',
-    url: '/api/cars/:id',
-    handler: carController.deleteCar
-  }
-  */
 ]
 
 module.exports = routes
