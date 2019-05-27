@@ -138,7 +138,7 @@ var type = null;
   // Check the type of login and add the value to type var
   //
 
-    if ( isNumber(lsogin.replace(/[\.,-/]/g, "")) ) {
+    if ( isNumber(login.replace(/[\.,-/]/g, "")) ) {
         
       const login_params  = login.trim().replace(/[^\d]+/g,'');
         
@@ -238,7 +238,7 @@ const checkPasswordExistence = ( user_id, password ) => {
 
 };
 
-const creatToken = ( user_id ) =>{
+const creatToken = ( user_id ) => {
  
   try {
 
@@ -272,91 +272,3 @@ const emailValidates = ( email ) => {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String( email ).toLowerCase());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-FUNCOES PARA ESTUDO
-
-function newFunction_1(req) {
-  const name = req.body.name;
-  const email = req.body.email;
-  const cnpj = req.body.cnpj;
-  const cpf = req.body.cpf;
-  const password = req.body.password;
-  return { name, email, cnpj, cpf, password };
-}
-
-function newFunction(req) {
-  const name = req.body.name;
-  const email = req.body.email;
-  const cnpj = req.body.cnpj;
-  const cpf = req.body.cpf;
-  const password = req.body.password;
-  return { name, email, cnpj, cpf, password };
-}
-
-// Get single car by ID
-exports.getSingleCar = async (req, reply) => {
-  try {
-    const id = req.params.id
-    const car = await Car.findById(id)
-    return car
-  } catch (err) {
-    throw boom.boomify(err)
-  }
-}
-
-// Add a new car
-exports.addCar = async (req, reply) => {
-  try {
-    const car = new Car(req.body)
-    return car.save()
-  } catch (err) {
-    throw boom.boomify(err)
-  }
-}
-
-// Update an existing car
-exports.updateCar = async (req, reply) => {
-  try {
-    const id = req.params.id
-    const car = req.body
-    const { ...updateData } = car
-    const update = await Car.findByIdAndUpdate(id, updateData, { new: true })
-    return update
-  } catch (err) {
-    throw boom.boomify(err)
-  }
-}
-
-// Delete a car
-exports.deleteCar = async (req, reply) => {
-  try {
-    const id = req.params.id
-    const car = await Car.findByIdAndRemove(id)
-    return car
-  } catch (err) {
-    throw boom.boomify(err)
-  }
-}
-*/
