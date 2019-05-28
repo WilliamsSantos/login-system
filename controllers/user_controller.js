@@ -1,5 +1,5 @@
 //Scripts and aux plugin
-  import * as scripts from "../app/assets/js/scripts";
+  import { checkLoginType, checkLoginExistences, checkPasswordExistence, creatToken } from "../app/assets/js/scripts";
 
     // Get Data Models
       const User = require('../models/User');
@@ -12,24 +12,24 @@ exports.login = async ( req, reply ) => {
 
   if( login && password ) { 
 
-    const login_type = scripts.checkLoginType( login );   
+    const login_type = checkLoginType( login );   
     console.log("Login type: "+login_type+"\n");
 
     if ( login_type ) {
   
-      const user_existence = scripts.checkLoginExistences( login, login_type ); 
+      const user_existence = checkLoginExistences( login, login_type ); 
       console.log("user_existence: "+user_existence+"\n" );
       
       if ( user_existence ) {
 
-        const password_existence = scripts.checkPasswordExistence( user_existence.id, password ); //Aqui ele recupera o id do resultado data
+        const password_existence = checkPasswordExistence( user_existence.id, password ); //Aqui ele recupera o id do resultado data
         console.log("password_existence: "+password_existence+"\n");
         
         if ( password_existence ) {
 
           const user_existense = password_existence;
-          scripts.creatToken(user_existense.id);
-          console.log("U usuario n existe "+scripts.creatToken(user_existence.id));
+          creatToken(user_existense.id);
+          console.log("U usuario n existe "+creatToken(user_existence.id));
           
           reply
           .header('Content-Type', 'application/json; charset=utf-8')

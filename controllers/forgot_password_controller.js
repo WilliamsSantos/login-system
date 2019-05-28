@@ -1,5 +1,5 @@
 //Scripts and aux plugin
-import * as scripts from "../app/assets/js/scripts";
+import { checkLoginType, checkLoginExistences, checkUserEmail } from "../app/assets/js/scripts";
 
 
   // Get Data Models
@@ -17,16 +17,16 @@ exports.checkLoginType = async (req, reply) => {
     try {
      
       var email = null;
-      const type = scripts.checkLoginType(login);
+      const type = checkLoginType(login);
      
       if( type ){
 
-        const user =  scripts.checkLoginExistences(login, type);
+        const user =  checkLoginExistences(login, type);
         console.log(" Login existense : "+user)
 
         if( user ){
 
-          email = scripts.checkUserEmail(user.id);
+          email = checkUserEmail(user.id);
           console.log(" email existense : "+user)
 
         }else{
