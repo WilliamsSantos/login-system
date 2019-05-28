@@ -240,4 +240,6 @@ export async function creatToken ( user_id ) {
         boom.boomify(e);
       
       }
-}
+};
+
+export async function checkUserEmail (user_id) {};
