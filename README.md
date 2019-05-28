@@ -11,3 +11,9 @@ mongo@wAspire2019
 
  
  //const validate_cpf_cnpj = cpf_cnpj.trim().replace(/[^\d]+/g,'');
+
+ schema fastify routes = middleware
+
+ fastify.get("/", ,middleware(schema), (res, reply) => {
+
+ });
