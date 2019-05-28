@@ -6,24 +6,24 @@ const mongoose  = require('./config/mongodb');
 //Routes reclare
 const Routes = require('./routes/routes');
 
-// Call route
-Routes.forEach((route, index) => {
-    fastify.route(route);
-});
+  // Call route
+  Routes.forEach((route, index) => {
+      fastify.route(route);
+  });
 
-//Connection database Mongodb test
-mongoose.set("useCreateIndex", true);
-mongoose.connection.on('error',(err)=>{
-    console.log("Db Erro\n");
-});
+  //Connection database Mongodb test
+  mongoose.set("useCreateIndex", true);
+  mongoose.connection.on('error',(err)=>{
+      console.log("Db Erro\n");
+  });
 
-mongoose.connection.on('disconnected',() => {
-    console.log("Db Disconnectes\n");
-});
+  mongoose.connection.on('disconnected',() => {
+      console.log("Db Disconnectes\n");
+  });
 
-mongoose.connection.on('connected', () => {
-    console.log("Db connected\n");
-});
+  mongoose.connection.on('connected', () => {
+      console.log("Db connected\n");
+  });
 
 
 // Run the server!

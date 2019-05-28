@@ -1,5 +1,5 @@
-// Error plugin
-const boom = require('boom');
+//Scripts and aux plugin
+import * as scripts from "../app/assets/js/scripts";
 
 
   // Get Data Models
@@ -12,20 +12,22 @@ exports.checkLoginType = async (req, reply) => {
   const { login } = req.body;
 
 
-  if (login) {
+  if ( login ) {
+    
     try {
      
       var email = null;
-      const type = checkLoginType(login);
+      const type = scripts.checkLoginType(login);
      
-      if(type){
+      if( type ){
 
-        const user =  checkLoginExistences(login, type);
-        
-        if(user){
+        const user =  scripts.checkLoginExistences(login, type);
+        console.log(" Login existense : "+user)
 
-          checkUserEmail(user.id);
+        if( user ){
 
+          email = scripts.checkUserEmail(user.id);
+          console.log(" email existense : "+user)
 
         }else{
           //console.log("User not existense"+ user_existence +"\n");
@@ -74,58 +76,6 @@ exports.checkLoginType = async (req, reply) => {
     });
   }
 }
-
-
-function checkLoginType(login) {
-  var type = null;
-   
-//
-// Check the type of login and add the value to type var
-//
-  if(isNumber(login)){
-      
-      const login_params  = login.trim().replace(/[^\d]+/g,'');
-      
-      if(login_params.length === 11){
-        type = "cpf";
-
-      }else if(login_params.length === 14){
-        type = "cnpj";
-
-      }
-
-  }else if(emailValidates(login.trim().toLowerCase())){ 
-      type = "email";
- 
-  }else {
-
-    var regex = new RegExp("^[a-zA-Z0-9-Zàèìòùáéíóúâêîôûãõ\b]+$");
-    if(regex.test(login)){
-      type = "username";
-    }
-
-}
-    if(type != null){
-      return(type);
-    }
-  return false;
-}
-
-function checkLoginExistences(login, type) {
-  try {
-    User.findOne({ type : login }, (err, data) => {
-      if (err) throw err;
-      if (data === null || data === []) {
-        return false;
-      }
-      return(data); 
-    });
-  }
-  catch (e) {
-      boom.boomify(e);
-  }
-};
-
 
 /*
 // Get single car by ID
