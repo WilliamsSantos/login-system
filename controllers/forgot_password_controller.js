@@ -1,43 +1,130 @@
+// Error plugin
 const boom = require('boom');
 
-// Get Data Models
-const forgottenPassword = require('../models/ForgottenPassword');
+
+  // Get Data Models
+  const User = require('../models/User');
+  const forgottenPassword = require('../models/ForgottenPassword');
+
 
 exports.checkLoginType = async (req, reply) => {
-  const { email, name, cpf_cnpj } = req.body;
+  
+  const { login } = req.body;
 
-  try {
-   if(email || name || cpf_cnpj){
-    reply
-      .header('Content-Type', 'application/json; charset=utf-8')
-      .send({
-        "statusCode": 200,
-        "result" : 'Form OK',
-        "green" : 1,         
-        "redCode" : 0,     
-        "message" : "All Ok.",
-        "stackResult" : {
-          "message": "OK"
+
+  if (login) {
+    try {
+     
+      var email = null;
+      const type = checkLoginType(login);
+     
+      if(type){
+
+        const user =  checkLoginExistences(login, type);
+        
+        if(user){
+
+          checkUserEmail(user.id);
+
+
+        }else{
+          //console.log("User not existense"+ user_existence +"\n");
+          reply
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            "statusCode": 500,
+            "result": `No register in database!`,
+            "green": 0,
+            "redCode": 5,
+            "message": `No query result`,
+            "stackResult": {
+              "message": "Error: No query result"
+            }
+          });
         }
-      });
-   }
-   reply
-    .header('Content-Type', 'application/json; charset=utf-8')
-    .send({ 
-          "statusCode" : 404,
-          "result" : 'email not found ',
-          "green" : 0,       
-          "redCode" : 2,     
-          "message" : "You need Fill email.",
-          "stackResult" : {
-           "message" :`error: Email not found!`
+      }else{
+        reply
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          "statusCode": 404,
+          "result": 'Login field is empty',
+          "green": 0,
+          "redCode": 1,
+          "message": "You need Fill the login field.",
+          "stackResult": {
+            "message": `error: Field login is empty`
           }
         });
-  } catch (e) {
-    return boom.boomify(e);
+      }
+    } catch (e) {
+      return boom.boomify(e);
+    }
+  }else{
+    reply
+    .header('Content-Type', 'application/json; charset=utf-8')
+    .send({
+      "statusCode": 404,
+      "result": 'Login field is empty',
+      "green": 0,
+      "redCode": 1,
+      "message": "You need Fill the login field.",
+      "stackResult": {
+        "message": `error: Field login is empty`
+      }
+    });
   }
 }
 
+
+function checkLoginType(login) {
+  var type = null;
+   
+//
+// Check the type of login and add the value to type var
+//
+  if(isNumber(login)){
+      
+      const login_params  = login.trim().replace(/[^\d]+/g,'');
+      
+      if(login_params.length === 11){
+        type = "cpf";
+
+      }else if(login_params.length === 14){
+        type = "cnpj";
+
+      }
+
+  }else if(emailValidates(login.trim().toLowerCase())){ 
+      type = "email";
+ 
+  }else {
+
+    var regex = new RegExp("^[a-zA-Z0-9-Zàèìòùáéíóúâêîôûãõ\b]+$");
+    if(regex.test(login)){
+      type = "username";
+    }
+
+}
+    if(type != null){
+      return(type);
+    }
+  return false;
+}
+
+function checkLoginExistences(login, type) {
+  try {
+    User.findOne({ type : login }, (err, data) => {
+      if (err) throw err;
+      if (data === null || data === []) {
+        return false;
+      }
+      return(data); 
+    });
+  }
+  catch (e) {
+      boom.boomify(e);
+  }
+};
 
 
 /*
