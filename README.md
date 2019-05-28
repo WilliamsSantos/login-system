@@ -17,3 +17,5 @@ mongo@wAspire2019
  fastify.get("/", ,middleware(schema), (res, reply) => {
 
  });
+ 
+ https://timonweb.com/tutorials/how-to-enable-ecmascript-6-imports-in-nodejs/
