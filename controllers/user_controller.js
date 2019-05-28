@@ -15,7 +15,7 @@ exports.login = async ( req, reply ) => {
   if( login && password ) { 
 
     const login_type = checkLoginType( login );   
-    console.log("Login type: "+login_type+"\n" );
+    console.log("Login type: "+login_type+"\n");
 
     if ( login_type ) {
   
@@ -176,23 +176,108 @@ var type = null;
 }
 
 const checkLoginExistences = ( login, type ) => {
-  
-  try {
-    
-    User.findOne({ type : login }, ( err, data ) => {
-      
-      if ( err ) throw err;
-      
-      if ( data === null || data === [] ) {
 
-        return false;
-      
-      }
-
-      return( data ); 
+  try { 
     
-    });
+    switch ( type ) {
+      
+      case "email":
+      
+        console.log(145);
+      
+          User.findOne({ email:`${login}`}, ( err, data ) => {
+            
+            if ( err ) throw err;
+              
+              if ( data === null || data === [] ) {
+        
+                return false;
+              
+              }
+            
+              console.log(" Dado do form : " + login + " Login type : " + type + "Res:"+ data);
+            
+            return(true, data ); 
+          
+          });
+
+        break;
   
+      case "username":
+        
+        console.log(166);
+
+          User.findOne({ username:`${login}`}, ( err, data ) => {
+                  
+            if ( err ) throw err;
+              
+              if ( data === null || data === [] ) {
+        
+                return false;
+              
+              }
+            
+              console.log(" Dado do form : " + login + " Login type : " + type + "Res:"+ data);
+            
+            return( data ); 
+          
+          });
+
+        break;
+
+      case "cpf":
+
+        console.log(189);
+      
+          User.findOne({ cpf:`${login}`}, ( err, data ) => {
+                  
+            if ( err ) throw err;
+              
+              if ( data === null || data === [] ) {
+        
+                return false;
+              
+              }
+            
+              console.log(" Dado do form : " + login + " Login type : " + type + "Res:"+ data);
+            
+            return( data ); 
+          
+          });
+          
+        break;
+
+      case "cnpj":
+      
+        console.log(211);
+      
+          User.findOne({ cnpj:`${login}`}, ( err, data ) => {
+                    
+            if ( err ) throw err;
+              
+              if ( data === null || data === [] ) {
+        
+                return false;
+              
+              }
+            
+              console.log(" Dado do form : " + login + " Login type : " + type + "Res:"+ data);
+            
+            return( data ); 
+          
+          });
+      
+        break;  
+
+      default:
+      
+          console.log(232);
+          return (false,{message:"No data found"});
+      
+        break;
+    
+    } 
+    
   } catch ( e ) {
   
     boom.boomify(e);
@@ -204,7 +289,7 @@ const checkPasswordExistence = ( user_id, password ) => {
   
   try {
 
-    User.findOne({ user_id, password }, ( err, data ) => {
+    User.findOne({ }, ( err, data ) => {
       
       if ( err ) throw err;
       
