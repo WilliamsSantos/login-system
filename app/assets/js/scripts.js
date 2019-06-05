@@ -1,7 +1,11 @@
+// Plugin
+const boom = require('boom'); 
+const crypto = require('crypto');
+
+
 // Get Data Models
     const User = require('../../../models/User');
     const AcessToken = require('../../../models/AccessToken');
-
 
 /*
 *     
@@ -9,15 +13,11 @@
 *
 */
 
-
-const boom = require('boom'); //Error plugin
-
 function isNumber ( number ){ return !isNaN(parseFloat( number )) && isFinite( number ); }
 function emailValidates ( email ) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String( email ).toLowerCase());
 }
-
 
 /*
 *     
@@ -25,6 +25,11 @@ function emailValidates ( email ) {
 *
 */
 
+export async function encryptText( encrypted ) {
+  var str = encrypted || '';
+  const md5 = crypto.createHash('md5').update(str).digest('hex');
+  return md5; 
+}
 
 export async function checkLoginType ( login ) {
 
@@ -79,16 +84,23 @@ export async function checkLoginType ( login ) {
       return(false);
 }     
     
-export async function checkLoginExistences ( login, type) {
-      try { 
+export async function checkLoginExistences ( login, type ) {
+      
+  try
+   { 
         switch ( type ) {
           case "email":
             
             //console.log(145);
+
             const email_data = '"'+login+'"';
+
             //console.log("email data: "+email_data);
+
               User.findOne({email:"contato@giryco.com"}, ( err, data ) => {
+                
                 if ( err ) throw err;
+                  
                   if ( data === null || data === [] ){ return []};
                   //console.log(" Dado do form : " + login + " Login type : " + type + "Res:"+ data+"\n");
                 

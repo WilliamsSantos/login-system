@@ -1,70 +1,68 @@
-//Scripts and aux plugin
   import { checkLoginType, checkLoginExistences, checkPasswordExistence, creatToken } from "../app/assets/js/scripts";
   const User = require('../models/User');
 
-  const TesteController = require('../controllers/teste.controller');
-  const testeController = new TesteController(User)
+    const UsuarioController = require('./user.controller').default;
+    const usuarioController = new UsuarioController(User)
 
 exports.login = async ( req, reply ) => {
-  
+
   const { login, password } = req.body;
 
-  if( login && password ) { 
+  if ( login && password ) { 
 
     const login_type = await checkLoginType( login );
-
     console.log("Login type: "+login_type+"\n");
 
     if ( login_type ) {
     
-      const user_existence = await testeController.checkLoginExistences( login, login_type ); 
-      console.log(user_existence);
-      console.log("user_existence: "+user_existence+"\n" );
+      const user_existence = await usuarioController.checkLoginExistences( login, login_type ); 
+      // console.log("user_existence: "+user_existence+"\n" );
       
       if ( user_existence ) {
 
-        const password_existence =  await checkPasswordExistence( user_existence.id, password ); //Aqui ele recupera o id do resultado data
-        console.log("password_existence: "+password_existence+"\n");
+        const password_existence =  await usuarioController.checkPasswordExistence( user_existence.id, password );
+        // console.log("password_existence: "+password_existence+"\n");
         
         if ( password_existence ) {
 
           const user_existense = password_existence;
+          // console.log(user_existence, 123455);
+
           await creatToken(user_existense.id);
-          console.log("O usuario existe "+creatToken(user_existence.id));
+          // console.log("O usuario existe "+creatToken(user_existence.id));
           
           reply
           .header('Content-Type', 'application/json; charset=utf-8')
           .send({
-                  "statusCode": 404,
-                  "result": 'Login successfully',
-                  "green": 0,
-                  "redCode": 1,
-                  "message": "",
-                  "stackResult": {
-                    "message": `login done successfully!s `
-                  }
+            "statusCode": 404,
+            "result": 'Login successfully',
+            "green": 0,
+            "redCode": 1,
+            "message": "",
+            "stackResult": {
+              "message": `login done successfully!s `
+            }
           });
-    
         } else {
         
-          console.log("Password not existense "+ user_existence +"\n");
+          // console.log("Password not existense "+ user_existence +"\n");
         
-            reply
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send({
-                "statusCode": 404,
-                "result": 'Invalid password',
-                "green": 0,
-                "redCode": 1,
-                "message": "Password invalid.",
-                "stackResult": {
-                      "message": `error: Password is invalid.`
-                }
-            });
+          reply
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+              "statusCode": 404,
+              "result": 'Invalid password',
+              "green": 0,
+              "redCode": 1,
+              "message": "Password invalid.",
+              "stackResult": {
+                    "message": `error: Password is invalid.`
+              }
+          });
         }
       } else {
 
-        console.log("User not existense "+ user_existence +"\n");
+        // console.log("User not existense "+ user_existence +"\n");
       
         reply
         .header('Content-Type', 'application/json; charset=utf-8')
@@ -98,7 +96,21 @@ exports.login = async ( req, reply ) => {
     }
   } else {
     
-    if ( !password ) {
+    if ( !password && !login ) {
+      reply
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          "statusCode": 404,
+          "result": 'Form is empty.',
+          "green": 0,
+          "redCode": 1,
+          "message": "You need fill the form.",
+          "stackResult": {
+            "message": `error: You need fill all field form.`
+          }
+        });
+
+    }else if(!password){
       reply
         .header('Content-Type', 'application/json; charset=utf-8')
         .send({
@@ -110,7 +122,7 @@ exports.login = async ( req, reply ) => {
           "stackResult": {
             "message": `error: password is empty.`
           }
-      });
+        });
     }
 
     reply
@@ -126,4 +138,5 @@ exports.login = async ( req, reply ) => {
         }
       });
   }
+
 }

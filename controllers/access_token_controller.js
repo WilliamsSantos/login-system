@@ -10,10 +10,8 @@ exports.checkToken = async (req, reply) => {
         message:"Check Token working!!"
     });
   } catch (err) {
-    return ({
-        error: boom.boomify(err)
-    })
-  
+   reply
+    .send()
   }
 }
 

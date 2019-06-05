@@ -1,7 +1,6 @@
 //Scripts and aux plugin
 import { checkLoginType, checkLoginExistences, checkUserEmail } from "../app/assets/js/scripts";
 
-
   // Get Data Models
   const User = require('../models/User');
   const forgottenPassword = require('../models/ForgottenPassword');

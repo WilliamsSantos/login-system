@@ -4,6 +4,10 @@ senha:
 mongo@wAspire2019
 
 
+fasti
+
+get/, mi, function
+
 # Ex de mongo query
 ### http://nodebr.com/nodejs-e-mongodb-introducao-ao-mongoose/
 

@@ -11,6 +11,7 @@ const Routes = require('./routes/routes');
       fastify.route(route);
   });
 
+
   //Connection database Mongodb test
   mongoose.set("useCreateIndex", true);
   mongoose.connection.on('error',(err)=>{
@@ -25,7 +26,6 @@ const Routes = require('./routes/routes');
       console.log("Db connected\n");
   });
 
-
 // Run the server!
 const start = async () => {
   try {
@@ -37,7 +37,3 @@ const start = async () => {
   }
 }; 
 start();
-
-
-
-
