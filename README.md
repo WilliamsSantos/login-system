@@ -1,8 +1,8 @@
 contato@giryco.com 123456
-
 senha:
 mongo@wAspire2019
 
+<<<<<<< HEAD
 
 fasti
 
@@ -17,3 +17,8 @@ get/, mi, function
  https://medium.com/@tarusharora/how-to-build-a-node-js-api-with-fastify-mongodb-docker-and-postman-part-2-cf2d8092aa71
 =======
 
+=======
+ fastify.get("/", ,middleware(schema), (res, reply) => {
+
+ });
+>>>>>>> conflict resolve
