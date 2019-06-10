@@ -226,13 +226,12 @@ export async function checkPasswordExistence ( user_id, password ) {
     
         boom.boomify(e);
      
-      }
-    
+      }   
 };
   
 export async function creatToken ( user_id ) {
      
-      try {
+  try {
     
         const acessTokenCreate = new AcessToken( user_id );
         
@@ -247,11 +246,11 @@ export async function creatToken ( user_id ) {
           return false;
           
           } 
-      } catch ( e ) {
+  } catch ( e ) {
         
         boom.boomify(e);
       
-      }
+  }
 };
 
 export async function checkUserEmail (user_id) {};
