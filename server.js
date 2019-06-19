@@ -4,11 +4,11 @@ const mongoose = require('./config/mongodb');
 
 
 const userRouter = require('./routes/users');
-
+const forgotPasswordRouter = require('./routes/forgotPassword');
 
 // ROUTES DECLARE
-fastify.post('/user/login', userRouter.login);
-
+fastify.post('/user/login', userRouter.login );
+fastify.post('/user/forgotPassword', forgotPasswordRouter.forgotPassword );
 
 
 // NEXT ROUTES TO CREATE
