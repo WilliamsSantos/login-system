@@ -1,8 +1,9 @@
-import { checkLoginType, checkLoginExistences, checkPasswordExistence, creatToken } from "../app/assets/js/scripts";
 const User = require('../models/User');
 
+import { checkLoginType, checkLoginExistences, checkPasswordExistence, creatToken } from "../app/assets/js/scripts";
+
   const UsuarioController = require('../controllers/user_controller').default;
-  const usuarioController = new UsuarioController(User);
+  const usuario = new UsuarioController(User);
 
 exports.login = async ( req, reply ) => {
 
@@ -15,12 +16,12 @@ if ( login && password ) {
 
   if ( login_type ) {
   
-    const user_existence = await usuarioController.checkLoginExistences( login, login_type ); 
+    const user_existence = await usuario.checkLoginExistences( login, login_type ); 
     // console.log("user_existence: "+user_existence+"\n" );
     
     if ( user_existence ) {
 
-      const password_existence =  await usuarioController.checkPasswordExistence( user_existence.id, password );
+      const password_existence =  await usuario.checkPasswordExistence( user_existence.id, password );
       // console.log("password_existence: "+password_existence+"\n");
       
       if ( password_existence ) {

@@ -1,4 +1,4 @@
-const userController           = require('../controllers/user_controller');
+const userController           = require('./users');
 const recoverPassword          = require('../controllers/recover_password_controller');
 const checkTokenController     = require('../controllers/access_token_controller');
 const forgotPasswordController = require('../controllers/forgot_password_controller');
