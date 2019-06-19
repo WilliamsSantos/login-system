@@ -2,14 +2,15 @@
 const fastify = require('fastify')({ logger: true })
 const mongoose  = require('./config/mongodb');
 
+const userRouter              = require('./routes/user_router');
+// const recoverPassword          = require('../controllers/recover_password_controller');
+// const checkTokenController     = require('../controllers/access_token_controller');
+// const forgotPasswordController = require('../controllers/forgot_password_controller');
 
-//Routes reclare
-const Routes = require('./routes/routes');
 
-  // Call route
-  Routes.forEach((route, index) => {
-      fastify.route(route);
-  });
+
+fastify.post('/user/login', userRouter.login);
+
 
 
   //Connection database Mongodb test
