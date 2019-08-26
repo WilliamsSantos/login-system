@@ -10,22 +10,6 @@ const forgotPasswordRouter = require('./routes/forgotPassword');
 fastify.post('/user/login', userRouter.login );
 fastify.post('/user/forgotPassword', forgotPasswordRouter.forgotPassword );
 
-
-// NEXT ROUTES TO CREATE
-
-// method: 'GET',
-//    url: '/user/forgotPassword',
-//    handler: forgotPasswordRouter.checkLoginType
-// 
-// method: 'POST',
-//    url: '/user/recoverPassword/',
-//    handler: recoverPasswordRouter.checkLoginType
-// 
-// method: 'GET',
-//    url: '/user/checkToken',
-//    handler: checkTokenRouter.checkToken
-
-
 //Connection database Mongodb test
 mongoose.set("useCreateIndex", true);
 mongoose.connection.on('error', (err) => {
