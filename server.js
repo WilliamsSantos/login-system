@@ -2,7 +2,6 @@
 const fastify = require('fastify')({ logger: true })
 const mongoose = require('./config/mongodb');
 
-
 const userRouter = require('./routes/users');
 const forgotPasswordRouter = require('./routes/forgotPassword');
 
